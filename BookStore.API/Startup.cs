@@ -66,6 +66,7 @@ namespace BookStore.API
 
             services.AddSingleton<ILoggerService, LoggerService>();
             services.AddScoped<IAuthorRepository, AuthorRepository>();
+            services.AddScoped<IBookRepository, BookRepository>();
 
             // Best to leave AddControllers for last
             services.AddControllers();

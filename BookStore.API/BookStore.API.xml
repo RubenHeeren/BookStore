@@ -50,7 +50,52 @@
             <param name="id"></param>
             <returns></returns>
         </member>
+        <member name="T:BookStore.API.Controllers.BooksController">
+            <summary>
+            Endpoint used to interact with the Books in the book store's database.
+            </summary>
+        </member>
+        <member name="M:BookStore.API.Controllers.BooksController.GetBooks">
+            <summary>
+            Get all Books.
+            </summary>
+            <returns>A list of Books.</returns>
+        </member>
+        <member name="M:BookStore.API.Controllers.BooksController.GetBook(System.Int32)">
+            <summary>
+            Get an Book by ID (primary key).
+            </summary>
+            <param name="id"></param>
+            <returns>A single Book</returns>
+        </member>
+        <member name="M:BookStore.API.Controllers.BooksController.Create(BookStore.API.DTOs.BookCreateDTO)">
+            <summary>
+            Creates an Book.
+            </summary>
+            <param name="bookCreateDTO"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BookStore.API.Controllers.BooksController.Update(System.Int32,BookStore.API.DTOs.BookUpdateDTO)">
+            <summary>
+            Updates an Book by id.
+            </summary>
+            <param name="id"></param>
+            <param name="bookUpdateDTO"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BookStore.API.Controllers.BooksController.Delete(System.Int32)">
+            <summary>
+            Deletes an Book by id.
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
         <member name="M:BookStore.API.Services.AuthorRepository.FindById(System.Int32)">
+            <summary>
+            Where id is primary key.
+            </summary>
+        </member>
+        <member name="M:BookStore.API.Services.BookRepository.FindById(System.Int32)">
             <summary>
             Where id is primary key.
             </summary>
