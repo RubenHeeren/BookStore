@@ -4,19 +4,55 @@
         <name>BookStore.API</name>
     </assembly>
     <members>
-        <member name="T:BookStore.API.Controllers.HomeController">
+        <member name="T:BookStore.API.Contracts.IRepositoryBase`1">
             <summary>
-            This is a test XML comment and a test API controller.
+            This is a demonstration of generics and asynchrous programming.
+            Facilitates CRUD operations with persistance to the database.
             </summary>
         </member>
-        <member name="M:BookStore.API.Controllers.HomeController.Get">
+        <member name="T:BookStore.API.Controllers.AuthorsController">
             <summary>
-            Gets values
+            Endpoint used to interact with the Authors in the book store's database.
             </summary>
         </member>
-        <member name="M:BookStore.API.Controllers.HomeController.Get(System.Int32)">
+        <member name="M:BookStore.API.Controllers.AuthorsController.GetAuthors">
             <summary>
-            Get a value by ID.
+            Get all Authors.
+            </summary>
+            <returns>A list of Authors.</returns>
+        </member>
+        <member name="M:BookStore.API.Controllers.AuthorsController.GetAuthor(System.Int32)">
+            <summary>
+            Get an Author by ID (primary key).
+            </summary>
+            <param name="id"></param>
+            <returns>A single Author</returns>
+        </member>
+        <member name="M:BookStore.API.Controllers.AuthorsController.Create(BookStore.API.DTOs.AuthorCreateDTO)">
+            <summary>
+            Creates an Author.
+            </summary>
+            <param name="authorCreateDTO"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BookStore.API.Controllers.AuthorsController.Update(System.Int32,BookStore.API.DTOs.AuthorUpdateDTO)">
+            <summary>
+            Updates an Author by id.
+            </summary>
+            <param name="id"></param>
+            <param name="authorUpdateDTO"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BookStore.API.Controllers.AuthorsController.Delete(System.Int32)">
+            <summary>
+            Deletes an Author by id.
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BookStore.API.Services.AuthorRepository.FindById(System.Int32)">
+            <summary>
+            Where id is primary key.
             </summary>
         </member>
     </members>
