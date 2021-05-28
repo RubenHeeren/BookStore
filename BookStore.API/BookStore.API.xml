@@ -90,6 +90,13 @@
             <param name="id"></param>
             <returns></returns>
         </member>
+        <member name="M:BookStore.API.Controllers.UsersController.Login(BookStore.API.DTOs.UserDTO)">
+            <summary>
+            User login endpoint
+            </summary>
+            <param name="userDTO"></param>
+            <returns></returns>
+        </member>
         <member name="M:BookStore.API.Services.AuthorRepository.FindById(System.Int32)">
             <summary>
             Where id is primary key.
