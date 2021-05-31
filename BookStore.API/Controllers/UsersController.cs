@@ -33,17 +33,53 @@ namespace BookStore.API.Controllers
         }
 
         /// <summary>
+        /// User register endpoint
+        /// </summary>
+        /// <param name="userDTO"></param>
+        /// <returns></returns>
+        [Route("register")]
+        [HttpPost]
+        public async Task<IActionResult> Register([FromBody] UserDTO userDTO)
+        {
+            try
+            {
+                var username = userDTO.EmailAddress;
+                var password = userDTO.Password;
+                var user = new IdentityUser { Email = username, UserName = username };
+                // Identity Framework handles hashing passwords for you.
+                var result = await _userManager.CreateAsync(user, password);
+
+                if (result.Succeeded == false)
+                {              
+                    foreach (var error in result.Errors)
+                    {
+                        InternalError($"Error code: {error.Code} - Error description: {error.Description}");
+                    }
+
+                    return InternalError($"User registration attempt failed. See errors above.");
+                }
+
+                return Ok(new { result.Succeeded });
+            }
+            catch (Exception e)
+            {
+                return InternalError($"{e.Message} - {e.InnerException}");
+            }
+        }
+
+        /// <summary>
         /// User login endpoint
         /// </summary>
         /// <param name="userDTO"></param>
         /// <returns></returns>
+        [Route("login")]
         [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Login([FromBody] UserDTO userDTO)
         {
             try
             {
-                var username = userDTO.Username;
+                var username = userDTO.EmailAddress;
                 var password = userDTO.Password;
                 var result = await _signInManager.PasswordSignInAsync(username, password, false, false);
 

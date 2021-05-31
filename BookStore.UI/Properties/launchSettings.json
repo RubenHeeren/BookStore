@@ -1,21 +1,21 @@
-﻿{
+{
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:50837",
-      "sslPort": 44376
+      "applicationUrl": "http://localhost:24785",
+      "sslPort": 44336
     }
   },
   "profiles": {
     "IIS Express": {
       "commandName": "IISExpress",
-      "launchBrowser": false,
+      "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "BookStore.API": {
+    "BookStore.UI": {
       "commandName": "Project",
       "launchBrowser": true,
       "applicationUrl": "https://localhost:5001;http://localhost:5000",

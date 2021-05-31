@@ -4,16 +4,17 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BookStore.API.DTOs
+namespace BookStore.UI.Models
 {
-    public class UserDTO
+    public class LoginModel
     {
         [Required]
         [EmailAddress]
+        [Display(Name = "Email address")]
         public string EmailAddress { get; set; }
-        [Required]        
+
+        [Required]
         [DataType(DataType.Password)]
-        [StringLength(50, ErrorMessage = "Your password must be between {2} and {1} characters", MinimumLength = 6)]
         public string Password { get; set; }
     }
 }
