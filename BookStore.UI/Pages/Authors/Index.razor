@@ -1,0 +1,73 @@
+﻿@page "/authors/"
+@inject IAuthorRepository _repo
+
+<h3 class="card-title">Index</h3>
+<br />
+<hr />
+<br />
+
+@if (model == null)
+{
+    <LoadingModelMessage LoadingMessage="Loading authors..."></LoadingModelMessage>
+}
+else
+{
+    @* Only visible to administrators. *@
+    <AuthorizeView Roles="Administrator">
+        <a href="/authors/create/" class="btn btn-success">
+            <span class="oi oi-plus"></span> Create new author
+        </a>
+    </AuthorizeView>
+
+    <br />
+    <br />
+    <br />
+
+    @if (model.Count < 1)
+    {
+        <LoadingModelMessage LoadingMessage="No authors found. Try creating one."></LoadingModelMessage>
+    }
+    else
+    {
+        <table class="table table-responsive">
+            <thead>
+                <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var author in model)
+                {
+                    <tr>
+                        <td>@author.Firstname</td>
+                        <td>@author.Lastname</td>
+                        <td>
+                            <a href="/authors/details/@author.Id" class="btn btn-primary">
+                                <span class="oi oi-book"></span> Details
+                            </a>
+                            <AuthorizeView Roles="Administrator">
+                                <a href="/authors/edit/@author.Id" class="btn btn-warning">
+                                    <span class="oi oi-pencil"></span> Edit
+                                </a>
+                                <a href="/authors/delete/@author.Id" class="btn btn-danger">
+                                    <span class="oi oi-delete"></span> Delete
+                                </a>
+                            </AuthorizeView>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}
+
+@code {
+    private IList<Author> model;
+
+    protected async override Task OnInitializedAsync()
+    {
+        model = await _repo.Get(Endpoints.AuthorsEndpoint);
+    }
+}

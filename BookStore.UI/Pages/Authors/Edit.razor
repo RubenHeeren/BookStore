@@ -1,0 +1,84 @@
+﻿@page "/authors/edit/{Id}"
+@attribute [Authorize(Roles = "Administrator")]
+@inject IAuthorRepository _repo
+@inject NavigationManager _navManager
+
+
+<h3 class="card-title">Edit author</h3>
+<br />
+<hr />
+<br />
+
+@if (isFailed)
+{
+    <ErrorMessageDiv TextErrorMessage="Something went wrong with your edit attempt."></ErrorMessageDiv>
+}
+
+@if (Model == null)
+{
+    <LoadingModelMessage LoadingMessage="Loading author details for editing..."></LoadingModelMessage>
+}
+else
+{
+    <EditForm Model="Model" OnValidSubmit="EditAuthor">
+        @* Use ASP.NET data annotations. *@
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="form-group">
+            <label for="firstname">First name</label>
+            <InputText @bind-Value="Model.Firstname" class="form-control" id="firstname"></InputText>
+        </div>
+
+        <div class="form-group">
+            <label for="lastname">Last name</label>
+            <InputText @bind-Value="Model.Lastname" class="form-control" id="lastname"></InputText>
+        </div>
+
+        <div class="form-group">
+            <label for="lastname">Biography</label>
+            <InputText @bind-Value="Model.Bio" class="form-control" id="bio"></InputText>
+        </div>
+
+        <button class="btn btn-success" type="submit">
+            <span class="oi oi-pencil"></span> Save changes
+        </button>
+
+        <button @onclick="BackToList" class="btn btn-outline-primary">
+            <span class="oi oi-media-skip-backward"></span> Back to all authors
+        </button>
+    </EditForm>
+}
+
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    private Author Model = new Author();
+    private bool isFailed = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Model = await _repo.Get(Endpoints.AuthorsEndpoint, int.Parse(Id));
+    }
+
+    private async Task EditAuthor()
+    {
+        bool isSuccess = await _repo.Update(Endpoints.AuthorsEndpoint, Model, Model.Id);
+
+        if (isSuccess)
+        {
+            BackToList();
+        }
+        else
+        {
+            isFailed = true;
+        }
+    }
+
+    private void BackToList()
+    {
+        _navManager.NavigateTo("/authors/");
+    }
+}

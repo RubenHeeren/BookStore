@@ -1,0 +1,76 @@
+﻿@page "/authors/details/{Id}"
+@inject IAuthorRepository _repo
+@inject NavigationManager _navManager
+
+<h3>Author details</h3>
+
+@if (Model == null)
+{
+    <LoadingModelMessage LoadingMessage="Loading author details..."></LoadingModelMessage>
+}
+else
+{
+    <div class="col-md-4">
+        <h4>Author Details</h4>
+        <table class="table table-responsive">
+            <tr>
+                <td>First name</td>
+                <td>@Model.Firstname</td>
+            </tr>
+            <tr>
+                <td>Last name</td>
+                <td>@Model.Firstname</td>
+            </tr>
+            <tr>
+                <td>Biography</td>
+                <td>@Model.Bio</td>
+            </tr>
+        </table>
+
+        <br />
+
+        @if (Model.Books == null || Model.Books.Count == 0)
+        {
+            <div class="alert alert-dismissible alert-secondary">
+                @Model.Firstname @Model.Lastname has not written any books.
+            </div>
+        }
+        else
+        {
+            <div class="card" style="width: 18rem;">
+                <div class="card-header">
+                    @Model.Firstname @Model.Lastname's Books
+                </div>
+                <ul class="list-group list-group-flush">                    
+                    @foreach (var book in Model.Books)
+                    {
+                        <li class="list-group-item">@book.Title (@book.Year) - €@book.Price</li>
+                    }
+                </ul>
+            </div>
+        }
+    </div>    
+}
+
+<br />
+
+<button @onclick="BackToList" class="btn btn-outline-primary">
+    <span class="oi oi-media-skip-backward"></span> Back to all authors
+</button>
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    private Author Model = new Author();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Model = await _repo.Get(Endpoints.AuthorsEndpoint, int.Parse(Id));
+    }
+
+    private void BackToList()
+    {
+        _navManager.NavigateTo("/authors/");
+    }
+}
