@@ -1,0 +1,81 @@
+﻿@page "/books/details/{Id}"
+@inject IBookRepository _bookRepo
+
+<h3>Book details</h3>
+
+@if (int.Parse(Id) < 1 || string.IsNullOrWhiteSpace(Id))
+{
+    <ErrorMessageDiv TextErrorMessage="Invalid selection. Please try again." />
+}
+else if (_model == null)
+{
+    <ErrorMessageDiv TextErrorMessage = "Loading book details..." />
+}
+else
+{
+    <div class="row">
+        <div class="col-6">
+            <table class="table table-responsive">
+                <tr>
+                    <td>
+                        <strong>Title</strong>
+                    </td>
+                    <td>@_model.Title</td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>Author</strong>
+                    </td>
+                    <td>
+                        @if (_model.Author == null)
+                        {
+                            <span class="text-muted">None</span>
+                        }
+                        else
+                        {
+                            <a href="/authors/details/@_model.AuthorId">@_model.Author.Firstname @_model.Author.Lastname</a>
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>Summary</strong>
+                    </td>
+                    <td>@_model.Summary</td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>Year</strong>
+                    </td>
+                    <td>@_model.Year</td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>ISBN</strong>
+                    </td>
+                    <td>@_model.Isbn</td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-4">
+            <img src="uploads/@_model.Image" style="height: 300px; width: 300px;" />
+            <h3 class="text-center text-info">€@_model.Price</h3>
+        </div>
+    </div>    
+}
+
+<a href="/books/" class="btn btn-outline-primary">
+    <span class="oi oi-media-skip-backward"></span> Back to all books
+</a>
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    private Book _model = new Book();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _model = await _bookRepo.Get(Endpoints.BooksEndpoint, int.Parse(Id));
+    }
+}

@@ -35,7 +35,9 @@ namespace BookStore.API.Services
 
         public async Task<IList<Book>> FindAll()
         {
-            var books = await _dbContext.Books.ToListAsync();
+            var books = await _dbContext.Books
+                .Include(book => book.Author)
+                .ToListAsync();
             return books;
         }
 
@@ -44,7 +46,9 @@ namespace BookStore.API.Services
         /// </summary>
         public async Task<Book> FindById(int id)
         {
-            var book = await _dbContext.Books.FindAsync(id);
+            var book = await _dbContext.Books
+                .Include(book => book.Author)
+                .FirstOrDefaultAsync(book => book.Id == id);
             return book;
         }
 

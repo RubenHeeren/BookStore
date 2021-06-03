@@ -2,7 +2,7 @@
 @attribute [Authorize(Roles = "Administrator")]
 @inject IAuthorRepository _repo
 @inject NavigationManager _navManager
-
+@inject IToastService _toastService
 
 <h3 class="card-title">Edit author</h3>
 <br />
@@ -69,6 +69,7 @@ else
 
         if (isSuccess)
         {
+            _toastService.ShowSuccess("Your changes have been committed to the database.", "Success");
             BackToList();
         }
         else

@@ -2,13 +2,14 @@
 @attribute [Authorize(Roles = "Administrator")]
 @inject IAuthorRepository _repo
 @inject NavigationManager _navManager
+@inject IToastService _toastService
 
 <h3 class="card-title">Create new author</h3>
 <br />
 <hr />
 <br />
 
-@if (isFailed)
+@if (isSuccess == false)
 {
     <ErrorMessageDiv TextErrorMessage="Something went wrong with your creation attempt."></ErrorMessageDiv>
 }
@@ -44,19 +45,16 @@
 
 @code {
     private Author Model = new Author();
-    private bool isFailed = false;
+    private bool isSuccess = true;
 
     private async Task CreateAuthor()
     {
-        bool isSuccess = await _repo.Create(Endpoints.AuthorsEndpoint, Model);
+        isSuccess = await _repo.Create(Endpoints.AuthorsEndpoint, Model);
 
         if (isSuccess)
         {
+            _toastService.ShowSuccess("Your changes have been committed to the database.", "Success");
             BackToList();
-        }
-        else
-        {
-            isFailed = true;
         }
     }
 
