@@ -11,12 +11,12 @@ namespace BookStore.UI.Services
 {
     public class AuthorRepository : BaseRepository<Author>, IAuthorRepository
     {
-        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly HttpClient _httpClient;
         private readonly ILocalStorageService _localStorage;
 
-        public AuthorRepository(IHttpClientFactory httpClientFactory, ILocalStorageService localStorage) : base(httpClientFactory, localStorage)
+        public AuthorRepository(HttpClient httpClient, ILocalStorageService localStorage) : base(httpClient, localStorage)
         {
-            _httpClientFactory = httpClientFactory;
+            _httpClient = httpClient;
             _localStorage = localStorage;
         }
     }

@@ -2,10 +2,9 @@
 @attribute [Authorize(Roles = "Administrator")]
 @inject IAuthorRepository _authorRepo
 @inject IBookRepository _bookRepo
-@inject IFileUpload _fileUpload
 @inject NavigationManager _navManager
 @inject IToastService _toastService
-@using System.IO;
+@using System.IO
 
 <h3 class="card-title">Edit book</h3>
 <br />
@@ -73,7 +72,7 @@ else
             }
             else if (!string.IsNullOrWhiteSpace(_model.Image))
             {
-                <img src="uploads/@_model.Image" style="height: 100px; width: 100px" />
+                <img src="@($"data:image/png;base64,{_model.File}")" style="height: 100px; width: 100px" />
             }
         </div>
 
@@ -116,14 +115,11 @@ else
                 var imageId = Guid.NewGuid().ToString().Replace("-", "");
                 var imageName = $"{imageId}{fileExtension}";
 
-                _fileUpload.RemoveFile(_model.Image);
-                await _fileUpload.UploadFile(_file, _memoryStream, imageName);
-
                 _model.Image = imageName;
+                _model.File = Convert.ToBase64String(_memoryStream.ToArray());
             }
             else if (isFileChanged && _file == null)
             {
-                _fileUpload.RemoveFile(_model.Image);
                 _model.Image = string.Empty;
             }
 

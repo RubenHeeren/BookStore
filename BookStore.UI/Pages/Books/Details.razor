@@ -58,7 +58,7 @@ else
             </table>
         </div>
         <div class="col-4">
-            <img src="uploads/@_model.Image" style="height: 300px; width: 300px;" />
+            <img src="@($"data:image/png;base64,{_model.File}")" style="height: 300px; width: 300px;" />
             <h3 class="text-center text-info">€@_model.Price</h3>
         </div>
     </div>    

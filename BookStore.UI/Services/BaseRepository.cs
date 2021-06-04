@@ -7,35 +7,27 @@ using System.Net;
 using System.Text;
 using Blazored.LocalStorage;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 
 namespace BookStore.UI.Services
 {
     public class BaseRepository<T> : IBaseRepository<T> where T : class
     {
-        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly HttpClient _httpClient;
         private readonly ILocalStorageService _localStorage;
 
-        public BaseRepository(IHttpClientFactory httpClientFactory, ILocalStorageService localStorage)
+        public BaseRepository(HttpClient httpClientFactory, ILocalStorageService localStorage)
         {
-            _httpClientFactory = httpClientFactory;
+            _httpClient = httpClientFactory;
             _localStorage = localStorage;
         }
 
         public async Task<bool> Create(string url, T obj)
         {
-            var request = new HttpRequestMessage(HttpMethod.Post, url);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", await GetBearerToken());
 
-            if (obj == null)
-            {
-                return false;
-            }
-
-            request.Content = new StringContent(JsonConvert.SerializeObject(obj), Encoding.UTF8, "application/json");
-
-            var client = _httpClientFactory.CreateClient();
-            // Get JWT bearer token and fill in HTTP header
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", await GetBearerToken());
-            HttpResponseMessage response = await client.SendAsync(request);
+            // Send the Javascript Object equivalent of whatever the instance of T is. obj is the instance of T.
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync<T>(url, obj);
 
             if (response.StatusCode == HttpStatusCode.Created)
             {
@@ -52,12 +44,9 @@ namespace BookStore.UI.Services
                 return false;
             }
 
-            var request = new HttpRequestMessage(HttpMethod.Delete, url + id);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", await GetBearerToken());
 
-            var client = _httpClientFactory.CreateClient();
-            // Get JWT bearer token and fill in HTTP header
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", await GetBearerToken());
-            HttpResponseMessage response = await client.SendAsync(request);
+            HttpResponseMessage response = await _httpClient.DeleteAsync(url + id);
 
             if (response.StatusCode == HttpStatusCode.NoContent)
             {
@@ -69,61 +58,38 @@ namespace BookStore.UI.Services
 
         public async Task<T> Get(string url, int id)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, url + id);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", await GetBearerToken());
 
-            var client = _httpClientFactory.CreateClient();
-            // Get JWT bearer token and fill in HTTP header
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", await GetBearerToken());
-            HttpResponseMessage response = await client.SendAsync(request);
+            var response = await _httpClient.GetFromJsonAsync<T>(url + id);
 
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                var content = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<T>(content);
-            }
-
-            return null;
+            return response;
         }
 
         public async Task<IList<T>> Get(string url)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, url);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", await GetBearerToken());
 
-            var client = _httpClientFactory.CreateClient();
-            // Get JWT bearer token and fill in HTTP header
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", await GetBearerToken());
-            HttpResponseMessage response = await client.SendAsync(request);
+            var response = await _httpClient.GetFromJsonAsync<List<T>>(url);
 
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                var content = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<IList<T>>(content);
-            }
-
-            return null;
+            return response;
         }
 
         public async Task<bool> Update(string url, T obj, int id)
         {
-            var request = new HttpRequestMessage(HttpMethod.Put, url + id);
-
             if (obj == null)
             {
                 return false;
             }
 
-            request.Content = new StringContent(JsonConvert.SerializeObject(obj), Encoding.UTF8, "application/json");
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", await GetBearerToken());
 
-            var client = _httpClientFactory.CreateClient();
-            // Get JWT bearer token and fill in HTTP header
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", await GetBearerToken());
-            HttpResponseMessage response = await client.SendAsync(request);
+            var response = await _httpClient.PutAsJsonAsync<T>(url + id, obj);
 
             if (response.StatusCode == HttpStatusCode.NoContent)
             {
                 return true;
             }
-            
+
             return false;
         }
 

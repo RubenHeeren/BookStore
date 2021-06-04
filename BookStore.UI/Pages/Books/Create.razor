@@ -2,7 +2,6 @@
 @attribute [Authorize(Roles = "Administrator")]
 @inject IAuthorRepository _authorRepo
 @inject IBookRepository _bookRepo
-@inject IFileUpload _fileUpload
 @inject NavigationManager _navManager
 @inject IToastService _toastService
 @using System.IO;
@@ -93,24 +92,24 @@
 
     private async Task CreateBook()
     {
-        if (_file != null)
+        if (_isInvalidImageUploadFileType == false)
         {
-            if (_isInvalidImageUploadFileType == false)
+            if (_file != null)
             {
                 var fileExtension = Path.GetExtension(_file.Name);
                 var imageId = Guid.NewGuid().ToString().Replace("-", "");
                 var imageName = $"{imageId}{fileExtension}";
 
-                await _fileUpload.UploadFile(_file, _memoryStream, imageName);
-
                 _model.Image = imageName;
-                _isSuccess = await _bookRepo.Create(Endpoints.BooksEndpoint, _model);
+                _model.File = Convert.ToBase64String(_memoryStream.ToArray());
+            }
 
-                if (_isSuccess)
-                {
-                    _toastService.ShowSuccess("Your changes have been committed to the database.", "Success");
-                    BackToList();
-                }
+            _isSuccess = await _bookRepo.Create(Endpoints.BooksEndpoint, _model);
+
+            if (_isSuccess)
+            {
+                _toastService.ShowSuccess("Your changes have been committed to the database.", "Success");
+                BackToList();
             }
         }
     }
@@ -121,12 +120,11 @@
 
         if (_file != null)
         {
-            var name = _file.Name;
+            var fileExtension = Path.GetExtension(_file.Name);
 
-            if (name.Contains("jpg") || name.Contains("jpeg") || name.Contains("png"))
+            if (fileExtension.Contains("jpg") || fileExtension.Contains("jpeg") || fileExtension.Contains("png"))
             {
                 _memoryStream = new MemoryStream();
-
                 await _file.Data.CopyToAsync(_memoryStream);
 
                 var streamReader = new StreamReader(_file.Data);
