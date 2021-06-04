@@ -92,12 +92,12 @@ else
 
     private Book _model = new Book();
     private IList<Author> _authors;
-    private IFileListEntry _file;
+    private IBrowserFile _file;
     private bool _isSuccess = true;
     private bool _isInvalidImageUploadFileType = false;
     private string _imageDataURL;
     private bool isFileChanged = false;
-    private MemoryStream _memoryStream;
+    private Stream _stream;
 
     protected override async Task OnInitializedAsync()
     {
@@ -111,12 +111,14 @@ else
         {
             if (_file != null)
             {
-                var fileExtension = Path.GetExtension(_file.Name);
-                var imageId = Guid.NewGuid().ToString().Replace("-", "");
-                var imageName = $"{imageId}{fileExtension}";
+                var ext = Path.GetExtension(_file.Name);
+                var picId = Guid.NewGuid().ToString().Replace("-", "");
+                var picName = $"{picId}{ext}";
 
-                _model.Image = imageName;
-                _model.File = Convert.ToBase64String(_memoryStream.ToArray());
+                _model.Image = picName;
+                var buffer = new byte[_file.Size];
+                await _file.OpenReadStream().ReadAsync(buffer);
+                _model.File = Convert.ToBase64String(buffer);
             }
             else if (isFileChanged && _file == null)
             {
@@ -133,25 +135,26 @@ else
         }
     }
 
-    private async Task HandleFileSelection(IFileListEntry[] files)
+    private async Task HandleFileSelection(InputFileChangeEventArgs e)
     {
-        _file = files.FirstOrDefault();
-        isFileChanged = true;
+        _file = e.File;
 
         if (_file != null)
         {
-            var name = _file.Name;
+            var fileExtension = Path.GetExtension(_file.Name);
 
-            if (name.Contains("jpg") || name.Contains("jpeg") || name.Contains("png"))
+            if (fileExtension.Contains("jpg") || fileExtension.Contains("jpeg") || fileExtension.Contains("png"))
             {
-                _memoryStream = new MemoryStream();
+                _stream = _file.OpenReadStream();
 
-                await _file.Data.CopyToAsync(_memoryStream);
+                var resizedImageFile = await _file.RequestImageFileAsync("image/png", 100, 100);
 
-                var streamReader = new StreamReader(_file.Data);
-                var imageBase64Data = Convert.ToBase64String(_memoryStream.ToArray());
+                var buffer = new byte[resizedImageFile.Size];
+                await resizedImageFile.OpenReadStream().ReadAsync(buffer);
+
+                var imageBase64Data = Convert.ToBase64String(buffer);
+
                 _imageDataURL = $"data:image/png;base64,{imageBase64Data}";
-
                 _isInvalidImageUploadFileType = false;
             }
             else

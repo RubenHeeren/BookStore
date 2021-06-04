@@ -18,10 +18,11 @@ namespace BookStore.UI
         public static async Task Main(string[] args)
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
-            builder.RootComponents.Add<App>("app");
+            builder.RootComponents.Add<App>("#app");
 
             // Inject dependencies
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+
             builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddBlazoredToast();
             builder.Services.AddAuthorizationCore();
@@ -32,7 +33,6 @@ namespace BookStore.UI
             builder.Services.AddTransient<IAuthenticationRepository, AuthenticationRepository>();
             builder.Services.AddTransient<IAuthorRepository, AuthorRepository>();
             builder.Services.AddTransient<IBookRepository, BookRepository>();
-            // builder.Services.AddTransient<IFileUpload, FileUpload>();
 
             await builder.Build().RunAsync();
         }

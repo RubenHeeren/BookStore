@@ -1,7 +1,6 @@
 ﻿@page "/books/delete/{Id}"
 @attribute [Authorize(Roles = "Administrator")]
 @inject IBookRepository _bookRepo
-@inject IFileUpload _fileUpload
 @inject NavigationManager _navManager
 @inject IToastService _toastService
 
@@ -100,7 +99,6 @@ else
 
     private async Task DeleteBook()
     {
-        _fileUpload.RemoveFile(_model.Image);
         isSuccess = await _bookRepo.Delete(Endpoints.BooksEndpoint, _model.Id);
 
         if (isSuccess)
