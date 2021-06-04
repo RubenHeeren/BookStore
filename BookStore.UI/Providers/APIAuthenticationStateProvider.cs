@@ -12,12 +12,11 @@ namespace BookStore.UI.Providers
     public class APIAuthenticationStateProvider : AuthenticationStateProvider
     {
         private readonly ILocalStorageService _localStorage;
-        private readonly JwtSecurityTokenHandler _jwtSecurityTokenHandler;
+        private readonly JwtSecurityTokenHandler _jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
 
-        public APIAuthenticationStateProvider(ILocalStorageService localStorage, JwtSecurityTokenHandler jwtSecurityTokenHandler)
+        public APIAuthenticationStateProvider(ILocalStorageService localStorage)
         {
             _localStorage = localStorage;
-            _jwtSecurityTokenHandler = jwtSecurityTokenHandler;
         }
 
         public async override Task<AuthenticationState> GetAuthenticationStateAsync()
@@ -25,6 +24,7 @@ namespace BookStore.UI.Providers
             try
             {
                 var savedToken = await _localStorage.GetItemAsync<string>("authToken");
+
                 if (string.IsNullOrWhiteSpace(savedToken))
                 {
                     return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
