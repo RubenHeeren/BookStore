@@ -59,23 +59,6 @@ else
             <InputTextArea @bind-Value="_model.Summary" class="form-control" id="summary" />
         </div>
 
-        <div class="form-group">
-            <label for="bookcover">Book cover photo</label>
-            <InputFile OnChange="HandleFileSelection" />
-            @if (_isInvalidImageUploadFileType)
-            {
-                <ErrorMessageDiv TextErrorMessage="Please remove the invalid file type and select as new image, or leave this field blank." />
-            }
-            @if (!string.IsNullOrWhiteSpace(_imageDataURL))
-            {
-                <img src="@_imageDataURL" style="height: 100px; width: 100px" />
-            }
-            else if (!string.IsNullOrWhiteSpace(_model.Image))
-            {
-                <img src="@($"data:image/png;base64,{_model.File}")" style="height: 100px; width: 100px" />
-            }
-        </div>
-
         <button class="btn btn-primary" type="submit">
             <span class="oi oi-pencil"></span> Submit changes
         </button>
@@ -92,12 +75,7 @@ else
 
     private Book _model = new Book();
     private IList<Author> _authors;
-    private IBrowserFile _file;
     private bool _isSuccess = true;
-    private bool _isInvalidImageUploadFileType = false;
-    private string _imageDataURL;
-    private bool isFileChanged = false;
-    private Stream _stream;
 
     protected override async Task OnInitializedAsync()
     {
@@ -107,65 +85,12 @@ else
 
     private async Task UpdateBook()
     {
-        if (_isInvalidImageUploadFileType == false)
+        _isSuccess = await _bookRepo.Update(Endpoints.BooksEndpoint, _model, _model.Id);
+
+        if (_isSuccess)
         {
-            if (_file != null)
-            {
-                var ext = Path.GetExtension(_file.Name);
-                var picId = Guid.NewGuid().ToString().Replace("-", "");
-                var picName = $"{picId}{ext}";
-
-                _model.Image = picName;
-                var buffer = new byte[_file.Size];
-                await _file.OpenReadStream().ReadAsync(buffer);
-                _model.File = Convert.ToBase64String(buffer);
-            }
-            else if (isFileChanged && _file == null)
-            {
-                _model.Image = string.Empty;
-            }
-
-            _isSuccess = await _bookRepo.Update(Endpoints.BooksEndpoint, _model, _model.Id);
-
-            if (_isSuccess)
-            {
-                _toastService.ShowSuccess("Your changes have been committed to the database.", "Success");
-                BackToList();
-            }
-        }
-    }
-
-    private async Task HandleFileSelection(InputFileChangeEventArgs e)
-    {
-        _file = e.File;
-
-        if (_file != null)
-        {
-            var fileExtension = Path.GetExtension(_file.Name);
-
-            if (fileExtension.Contains("jpg") || fileExtension.Contains("jpeg") || fileExtension.Contains("png"))
-            {
-                _stream = _file.OpenReadStream();
-
-                var resizedImageFile = await _file.RequestImageFileAsync("image/png", 100, 100);
-
-                var buffer = new byte[resizedImageFile.Size];
-                await resizedImageFile.OpenReadStream().ReadAsync(buffer);
-
-                var imageBase64Data = Convert.ToBase64String(buffer);
-
-                _imageDataURL = $"data:image/png;base64,{imageBase64Data}";
-                _isInvalidImageUploadFileType = false;
-            }
-            else
-            {
-                _isInvalidImageUploadFileType = true;
-                _imageDataURL = string.Empty;
-            }
-        }
-        else
-        {
-            _isInvalidImageUploadFileType = false;
+            _toastService.ShowSuccess("Your changes have been committed to the database.", "Success");
+            BackToList();
         }
     }
 

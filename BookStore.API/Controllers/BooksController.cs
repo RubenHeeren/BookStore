@@ -51,20 +51,6 @@ namespace BookStore.API.Controllers
                 var books = await _bookRepository.FindAll();
                 var response = _mapper.Map<IList<BookDTO>>(books);
 
-                foreach (var item in response)
-                {
-                    if (string.IsNullOrEmpty(item.Image) == false)
-                    {
-                        var imagePath = GetImagePath(item.Image);
-
-                        if (System.IO.File.Exists(imagePath))
-                        {
-                            byte[] imageBytes = System.IO.File.ReadAllBytes(imagePath);
-                            item.File = Convert.ToBase64String(imageBytes);
-                        }
-                    }
-                }
-
                 return Ok(response);
             }
             catch (Exception e)
@@ -92,18 +78,7 @@ namespace BookStore.API.Controllers
                     return NotFound();
                 }
                 BookDTO response = _mapper.Map<BookDTO>(bookDTO);
-
-                if (string.IsNullOrEmpty(response.Image) == false)
-                {
-                    var imagePath = GetImagePath(bookDTO.Image);
-
-                    if (System.IO.File.Exists(imagePath))
-                    {
-                        byte[] imageBytes = System.IO.File.ReadAllBytes(imagePath);
-                        response.File = Convert.ToBase64String(imageBytes);
-                    }
-                }
-
+      
                 return Ok(response);
             }
             catch (Exception e)
@@ -144,13 +119,6 @@ namespace BookStore.API.Controllers
                     return InternalError($"Book creation failed.");
                 }
 
-                if (string.IsNullOrEmpty(bookCreateDTO.File) == false)
-                {
-                    var imagePath = GetImagePath(bookCreateDTO.Image);
-                    byte[] imageBytes = Convert.FromBase64String(bookCreateDTO.File);
-                    System.IO.File.WriteAllBytes(imagePath, imageBytes);
-                }
-
                 return Created("Create", new { book });
             }
             catch (Exception e)
@@ -188,27 +156,12 @@ namespace BookStore.API.Controllers
                     return BadRequest(ModelState);
                 }
 
-                var oldImageName = await _bookRepository.GetImageFileName(id);
                 var book = _mapper.Map<Book>(bookUpdateDTO);
                 var isSuccess = await _bookRepository.Update(book);
 
                 if (isSuccess == false)
                 {
                     return InternalError($"Update operation failed.");
-                }
-
-                if (bookUpdateDTO.Image.Equals(oldImageName) == false)
-                {
-                    if (System.IO.File.Exists(GetImagePath(oldImageName)))
-                    {
-                        System.IO.File.Delete(GetImagePath(oldImageName));
-                    }
-                }
-
-                if (string.IsNullOrEmpty(bookUpdateDTO.File) == false)
-                {
-                    byte[] imageBytes = Convert.FromBase64String(bookUpdateDTO.File);
-                    System.IO.File.WriteAllBytes(GetImagePath(bookUpdateDTO.Image), imageBytes);
                 }
 
                 return NoContent();
