@@ -6,6 +6,7 @@ This .NET version 5 application allows employees of a library to manage their in
 
 To get started go to the [Log in](/login) page and log in with one of the demo accounts, then you can perform CRUD operations on the 'Authors' and 'Books' tables.  
 
+[Link to live demo](https://bs.rubenheeren.com) 
 [Link to GitHub repo](https://github.com/RubenHeeren/BookStore)  
 [Link to course](https://www.udemy.com/course/end-to-end-aspnet-core-31-api-and-blazor-development/)
 
