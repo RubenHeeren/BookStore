@@ -4,9 +4,8 @@
 @inject NavigationManager _navManager
 @inject IToastService _toastService
 
-<h1 class="card-title" style="color: red;">Are you sure you want to delete this book?</h1>
+<h1 class="card-title" style="color: red;">Deleting a book can not be undone. Press Delete to confirm.</h1>
 <br />
-<hr />
 <br />
 
 @if (isSuccess == false)
@@ -25,7 +24,7 @@ else if (_model == null)
 else
 {
     <div class="row">
-        <div class="col-6">
+        <div class="col-12">
             <table class="table table-responsive">
                 <tr>
                     <td>

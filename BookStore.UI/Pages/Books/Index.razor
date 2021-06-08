@@ -46,9 +46,6 @@ else
                 @foreach (var book in _model)
                 {
                     <tr>
-                        <td>
-                            <img src="@($"data:image/png;base64,{book.File}")" style="height: 50px; width: 50px" />
-                        </td>
                         <td>@book.Title</td>
                         <td>@string.Format("{0:C}", book.Price)</td>
                         <td>
