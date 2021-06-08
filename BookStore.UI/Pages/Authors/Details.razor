@@ -2,7 +2,10 @@
 @inject IAuthorRepository _repo
 @inject NavigationManager _navManager
 
-<h3>Author details</h3>
+<h1 class="card-title">Author details</h1>
+<br />
+<hr />
+<br />
 
 @if (Model == null)
 {
@@ -41,7 +44,7 @@ else
                 <div class="card-header">
                     @Model.Firstname @Model.Lastname's Books
                 </div>
-                <ul class="list-group list-group-flush">                    
+                <ul class="list-group list-group-flush">
                     @foreach (var book in Model.Books)
                     {
                         <li class="list-group-item">@book.Title (@book.Year) - €@book.Price</li>
@@ -49,7 +52,7 @@ else
                 </ul>
             </div>
         }
-    </div>    
+    </div>
 }
 
 <br />

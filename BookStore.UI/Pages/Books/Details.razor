@@ -1,7 +1,10 @@
 ﻿@page "/books/details/{Id}"
 @inject IBookRepository _bookRepo
 
-<h3>Book details</h3>
+<h1 class="card-title">Book details</h1>
+<br />
+<hr />
+<br />
 
 @if (int.Parse(Id) < 1 || string.IsNullOrWhiteSpace(Id))
 {
@@ -9,7 +12,7 @@
 }
 else if (_model == null)
 {
-    <ErrorMessageDiv TextErrorMessage = "Loading book details..." />
+    <ErrorMessageDiv TextErrorMessage="Loading book details..." />
 }
 else
 {
@@ -61,7 +64,7 @@ else
             <img src="@($"data:image/png;base64,{_model.File}")" style="height: 300px; width: 300px;" />
             <h3 class="text-center text-info">€@_model.Price</h3>
         </div>
-    </div>    
+    </div>
 }
 
 <a href="/books/" class="btn btn-outline-primary">
