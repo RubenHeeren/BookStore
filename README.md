@@ -4,7 +4,7 @@
 
 This .NET version 5 application allows employees of a library to manage their inventory of books in a user-friendly manner and store their data in a SQL database. This is the live demo for the learning project built in the Udemy course "End to End ASP.NET Core API and Blazor Development".  
 
-To get started go to the [Log in](/login) page and log in with one of the demo accounts, then you can perform CRUD operations on the 'Authors' and 'Books' tables.  
+To get started go to the [Log in](https://bs.rubenheeren.com/login) page and log in with one of the demo accounts, then you can perform CRUD operations on the 'Authors' and 'Books' tables.  
 
 [Link to live demo](https://bs.rubenheeren.com)  
 [Link to GitHub repo](https://github.com/RubenHeeren/BookStore)  
