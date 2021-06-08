@@ -46,7 +46,7 @@
 
   <ItemGroup>
     <None Update="Data\BookStore.sqlite">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
