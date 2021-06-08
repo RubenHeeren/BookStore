@@ -44,9 +44,11 @@ namespace BookStore.API
             {
                 options.AddPolicy("CorsPolicy", 
                     builder => 
-                    builder.AllowAnyOrigin()
+                    builder
                     .AllowAnyMethod()
-                    .AllowAnyHeader());
+                    .AllowAnyHeader()
+                    .SetIsOriginAllowed(origin => true) // allow any origin
+                    .AllowCredentials()); // allow credentials
             });
 
             services.AddAutoMapper(typeof(Maps));

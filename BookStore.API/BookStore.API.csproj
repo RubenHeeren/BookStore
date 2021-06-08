@@ -41,12 +41,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\Migrations\" />
     <Folder Include="Uploads\" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Data\BookStore.db">
+    <None Update="Data\BookStore.sqlite">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
